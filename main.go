@@ -2,13 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/akamensky/argparse"
 	"os"
+
+	"github.com/akamensky/argparse"
 )
 
 func main() {
 	parser := argparse.NewParser("sandbox-cli", "tool for in-time configuraion gVisor")
-	fuckFlag := parser.Flag("f", "force", &argparse.Options{Required: false, Help: "Send fuck json"})
+	port := parser.Int("p", "port", &argparse.Options{Required: true, Help: "Socket port"})
+	address := parser.String("a", "address", &argparse.Options{Required: true, Help: "Socket address"})
+
+	fuckFlag := parser.Flag("f", "fuck", &argparse.Options{Required: false, Help: "Send fuck json"})
 
 	err := parser.Parse(os.Args)
 	if err != nil {
@@ -17,7 +21,7 @@ func main() {
 
 	if *fuckFlag {
 		message := Message{Data: "hi", Type: "log"}
-		SendToSocker("127.0.0.1", 3333, message.ToString())
+		SendToSocker(*address, *port, message.ToString())
 	}
 
 	fmt.Println(*fuckFlag)
