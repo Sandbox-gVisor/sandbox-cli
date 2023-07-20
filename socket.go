@@ -42,17 +42,16 @@ func SendToSocket(addr string, requestType string, dto []CallbackDto) {
 		fmt.Println("Ошибка чтения данных от сервера:", err)
 		return
 	}
-
-	ret := string(buffer[:n])
+	buffer = buffer[:n-1]
 
 	// Распаковка JSON-ответа
-	//var response Response
-	//err = json.Unmarshal(buffer[:n], &response)
-	//if err != nil {
-	//	fmt.Println("Ошибка при декодировании JSON-ответа:", err)
-	//	return
-	//}
+	var response Response
+	err = json.Unmarshal(buffer, &response)
+	if err != nil {
+		fmt.Println("Ошибка при декодировании JSON-ответа:", err)
+	}
 
 	// Вывод ответа
-	fmt.Println("Ответ от сервера:", ret)
+	fmt.Println("Ответ от сервера:")
+	fmt.Println(response.String())
 }

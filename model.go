@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 type Message struct {
@@ -30,5 +31,10 @@ type Request struct {
 }
 
 type Response struct {
-	Type string `json:"type"`
+	Type    string `json:"type"`
+	Message string `json:"message"`
+}
+
+func (r *Response) String() string {
+	return fmt.Sprintf("Type:      %s;\nMessage:   %s", r.Type, r.Message)
 }
