@@ -1,16 +1,15 @@
 package cli
 
 import (
-	"encoding/json"
 	"fmt"
 	"net"
 )
 
-func SendToSocket(addr string, requestType string, dto []CallbackDto) {
+func SendToSocket(addr string, requestType string, message []byte) ([]byte, error) {
 	conn, err := net.Dial("unix", addr)
 	if err != nil {
 		fmt.Println("Ошибка подключения к серверу:", err)
-		return
+		return nil, err
 	}
 	defer func(conn net.Conn) {
 		if err := conn.Close(); err != nil {
@@ -18,44 +17,18 @@ func SendToSocket(addr string, requestType string, dto []CallbackDto) {
 		}
 	}(conn)
 
-	request := Request{
-		Type:      requestType,
-		Callbacks: dto,
-	}
-
-	// Кодирование JSON-запроса
-	requestJSON, err := json.Marshal(request)
-	fmt.Println(string(requestJSON))
-	if err != nil {
-		fmt.Println("Ошибка при кодировании JSON-запроса:", err)
-		return
-	}
-	//requestJSON = requestJSON[:len(requestJSON)-1]
-
-	// Отправка JSON-запроса серверу
-	_, err = conn.Write(requestJSON)
+	_, err = conn.Write(message)
 	if err != nil {
 		fmt.Println("Ошибка при отправке JSON-запроса серверу:", err)
-		return
+		return nil, err
 	}
 
-	// Получение ответа от сервера
 	buffer := make([]byte, 1024)
 	n, err := conn.Read(buffer)
 	if err != nil {
 		fmt.Println("Ошибка чтения данных от сервера:", err)
-		return
+		return nil, err
 	}
 	buffer = buffer[:n]
-
-	// Распаковка JSON-ответа
-	var response Response
-	err = json.Unmarshal(buffer, &response)
-	if err != nil {
-		fmt.Println("Ошибка при декодировании JSON-ответа:", err)
-	}
-
-	// Вывод ответа
-	fmt.Println("Ответ от сервера:")
-	fmt.Println(response.String())
+	return buffer, nil
 }
