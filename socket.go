@@ -1,31 +1,58 @@
 package main
 
 import (
-	"log"
+	"encoding/json"
+	"fmt"
 	"net"
-	"os"
 )
 
-const (
-	StopCharacter = "\r\n\r\n"
-)
-
-func SendToSocket(addr string, message string) {
+func SendToSocket(addr string, requestType string, dto []CallbackDto) {
 	conn, err := net.Dial("unix", addr)
-
 	if err != nil {
-		log.Fatalln(err)
-		os.Exit(1)
+		fmt.Println("Ошибка подключения к серверу:", err)
+		return
 	}
-
 	defer conn.Close()
 
-	conn.Write([]byte(message))
-	conn.Write([]byte(StopCharacter))
-	log.Printf("Send: %s", message)
+	request := Request{
+		Type:      requestType,
+		Callbacks: dto,
+	}
 
-	buff := make([]byte, 1024)
-	n, _ := conn.Read(buff)
-	log.Printf("Receive: %s", buff[:n])
+	// Кодирование JSON-запроса
+	requestJSON, err := json.Marshal(request)
+	fmt.Println(string(requestJSON))
+	if err != nil {
+		fmt.Println("Ошибка при кодировании JSON-запроса:", err)
+		return
+	}
+	//requestJSON = requestJSON[:len(requestJSON)-1]
 
+	// Отправка JSON-запроса серверу
+	_, err = conn.Write(requestJSON)
+	if err != nil {
+		fmt.Println("Ошибка при отправке JSON-запроса серверу:", err)
+		return
+	}
+
+	// Получение ответа от сервера
+	buffer := make([]byte, 1024)
+	n, err := conn.Read(buffer)
+	if err != nil {
+		fmt.Println("Ошибка чтения данных от сервера:", err)
+		return
+	}
+
+	ret := string(buffer[:n])
+
+	// Распаковка JSON-ответа
+	//var response Response
+	//err = json.Unmarshal(buffer[:n], &response)
+	//if err != nil {
+	//	fmt.Println("Ошибка при декодировании JSON-ответа:", err)
+	//	return
+	//}
+
+	// Вывод ответа
+	fmt.Println("Ответ от сервера:", ret)
 }
