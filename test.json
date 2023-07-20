@@ -1,8 +1,0 @@
-[
-	{
-		"sysno": 59,
-		"entry-point": "bruh",
-
-		"source": "function bruh(a, b, c, d, e, f){const ret = hooks.getPidInfo(); hooks.print(JSON.stringify(ret));  return{};}"
-	}
-]
