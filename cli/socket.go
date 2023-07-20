@@ -12,7 +12,11 @@ func SendToSocket(addr string, requestType string, dto []CallbackDto) {
 		fmt.Println("Ошибка подключения к серверу:", err)
 		return
 	}
-	defer conn.Close()
+	defer func(conn net.Conn) {
+		if err := conn.Close(); err != nil {
+			fmt.Println(err)
+		}
+	}(conn)
 
 	request := Request{
 		Type:      requestType,

@@ -15,6 +15,8 @@ func ReadFile(filename string) []byte {
 
 func ReadDtos(content []byte) []CallbackDto {
 	var callbacks []CallbackDto
-	json.Unmarshal(content, &callbacks)
+	if err := json.Unmarshal(content, &callbacks); err != nil {
+		return []CallbackDto{}
+	}
 	return callbacks
 }
