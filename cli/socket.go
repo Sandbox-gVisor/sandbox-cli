@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"encoding/json"
@@ -42,7 +42,7 @@ func SendToSocket(addr string, requestType string, dto []CallbackDto) {
 		fmt.Println("Ошибка чтения данных от сервера:", err)
 		return
 	}
-	buffer = buffer[:n-1]
+	buffer = buffer[:n]
 
 	// Распаковка JSON-ответа
 	var response Response
