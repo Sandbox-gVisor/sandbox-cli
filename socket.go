@@ -4,17 +4,14 @@ import (
 	"log"
 	"net"
 	"os"
-	"strconv"
-	"strings"
 )
 
 const (
 	StopCharacter = "\r\n\r\n"
 )
 
-func SendToSocker(ip string, port int, message string) {
-	addr := strings.Join([]string{ip, strconv.Itoa(port)}, ":")
-	conn, err := net.Dial("tcp", addr)
+func SendToSocket(addr string, message string) {
+	conn, err := net.Dial("unix", addr)
 
 	if err != nil {
 		log.Fatalln(err)
