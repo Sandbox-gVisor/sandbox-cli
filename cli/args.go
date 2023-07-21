@@ -15,7 +15,8 @@ func ParseCli() {
 	stateCmd := parser.NewCommand("state", "Change state")
 
 	changeFile := changeCmd.String("c", "conf", &argparse.Options{Required: true, Help: "file with config"})
-	stateFile := stateCmd.String("c", "conf", &argparse.Options{Required: true, Help: "file with config"})
+	entryPoint := stateCmd.String("e", "entry_point", &argparse.Options{Required: true, Help: "Entry point"})
+	stateFile := stateCmd.String("c", "conf", &argparse.Options{Required: true, Help: "file with source"})
 
 	err := parser.Parse(os.Args)
 	if err != nil {
@@ -24,11 +25,11 @@ func ParseCli() {
 	}
 
 	if changeCmd.Happened() {
-		sendChange(*address, ReadDtos(ReadFile(*changeFile)))
+		fmt.Println(sendChange(*address, ReadDtos(ReadFile(*changeFile))))
 	} else if stateCmd.Happened() {
-		sendState(*address, ReadDtos(ReadFile(*stateFile)))
+		fmt.Println(sendState(*address, *entryPoint, ReadSource(ReadFile(*stateFile))))
 	} else if infoCmd.Happened() {
-		sendInfo(*address)
+		fmt.Println(sendInfo(*address))
 	} else {
 		err := fmt.Errorf("Bad arguments, check usage")
 		fmt.Print(parser.Usage(err))
