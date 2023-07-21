@@ -72,3 +72,28 @@ func sendGet(address string) string {
 	}
 	return string(result)
 }
+
+func sendDelete(address string, options string, sysno int, callbackType string) string {
+	var list []models.DeleteCallbackJson
+	if options != "all" {
+		list = append(list, models.DeleteCallbackJson{
+			Type:  callbackType,
+			Sysno: sysno,
+		})
+	}
+	req := models.DeleteRequest{
+		Type:    "unregister-callbacks",
+		Options: options,
+		List:    list,
+	}
+	body, err := json.Marshal(req)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	result, e := SendToSocket(address, body)
+	if e != nil {
+		return ""
+	}
+	return string(result)
+}
