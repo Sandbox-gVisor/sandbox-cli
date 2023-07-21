@@ -31,7 +31,7 @@ func ParseCli() {
 	} else if infoCmd.Happened() {
 		fmt.Println(sendInfo(*address))
 	} else {
-		err := fmt.Errorf("Bad arguments, check usage")
+		err := fmt.Errorf("bad arguments, check usage")
 		fmt.Print(parser.Usage(err))
 	}
 }

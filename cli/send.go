@@ -3,7 +3,7 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-	models "sandbox-cli/models"
+	"sandbox-cli/models"
 )
 
 func sendChange(address string, dtos []models.CallbackDto) string {
@@ -16,7 +16,7 @@ func sendChange(address string, dtos []models.CallbackDto) string {
 		fmt.Println(err)
 		return ""
 	}
-	result, e := SendToSocket(address, "change-callbacks", body)
+	result, e := SendToSocket(address, body)
 	if e != nil {
 		return ""
 	}
@@ -34,7 +34,7 @@ func sendState(address string, entryPoint string, src string) string {
 		fmt.Println(err)
 		return ""
 	}
-	result, e := SendToSocket(address, "change-state", body)
+	result, e := SendToSocket(address, body)
 	if e != nil {
 		return ""
 	}
@@ -50,7 +50,7 @@ func sendInfo(address string) string {
 		fmt.Println(err)
 		return ""
 	}
-	result, e := SendToSocket(address, "hooks-info", body)
+	result, e := SendToSocket(address, body)
 	if e != nil {
 		return ""
 	}

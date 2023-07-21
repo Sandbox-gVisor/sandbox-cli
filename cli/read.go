@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"os"
 
-	models "sandbox-cli/models"
+	"sandbox-cli/models"
 )
 
 func ReadFile(filename string) []byte {

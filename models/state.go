@@ -11,5 +11,5 @@ type StateResponse struct {
 }
 
 func (r *StateResponse) ToString() string {
-	return "Type:   %s" + r.Type
+	return "Type:   " + r.Type
 }

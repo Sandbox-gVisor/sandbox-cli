@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-func SendToSocket(addr string, requestType string, message []byte) ([]byte, error) {
+func SendToSocket(addr string, message []byte) ([]byte, error) {
 	conn, err := net.Dial("unix", addr)
 	if err != nil {
 		fmt.Println("Ошибка подключения к серверу:", err)
