@@ -13,6 +13,7 @@ func ParseCli() {
 	changeCmd := parser.NewCommand("change", "Change callbacks")
 	infoCmd := parser.NewCommand("info", "Show info")
 	stateCmd := parser.NewCommand("state", "Change state")
+	getCmd := parser.NewCommand("get", "Get current callbacks")
 
 	changeFile := changeCmd.String("c", "conf", &argparse.Options{Required: true, Help: "file with config"})
 	entryPoint := stateCmd.String("e", "entry_point", &argparse.Options{Required: true, Help: "Entry point"})
@@ -30,6 +31,8 @@ func ParseCli() {
 		fmt.Println(sendState(*address, *entryPoint, ReadSource(ReadFile(*stateFile))))
 	} else if infoCmd.Happened() {
 		fmt.Println(sendInfo(*address))
+	} else if getCmd.Happened() {
+		fmt.Println(sendGet(*address))
 	} else {
 		err := fmt.Errorf("bad arguments, check usage")
 		fmt.Print(parser.Usage(err))

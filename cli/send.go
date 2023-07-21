@@ -56,3 +56,19 @@ func sendInfo(address string) string {
 	}
 	return string(result)
 }
+
+func sendGet(address string) string {
+	req := models.GetRequest{
+		Type: "current-callbacks",
+	}
+	body, err := json.Marshal(req)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	result, e := SendToSocket(address, body)
+	if e != nil {
+		return ""
+	}
+	return string(result)
+}
