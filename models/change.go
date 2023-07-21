@@ -8,6 +8,7 @@ type CallbackDto struct {
 	Sysno          int    `json:"sysno"`
 	EntryPoint     string `json:"entry-point"`
 	CallbackSource string `json:"source"`
+	Type           string `json:"type"`
 }
 
 type ChangeRequest struct {

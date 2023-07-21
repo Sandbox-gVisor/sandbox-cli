@@ -1,10 +1,12 @@
 package cli
 
 import (
-	"encoding/json"
+	"fmt"
 	"os"
+	"regexp"
+	"strconv"
 
-	models "sandbox-cli/models"
+	"sandbox-cli/models"
 )
 
 func ReadFile(filename string) []byte {
@@ -15,12 +17,35 @@ func ReadFile(filename string) []byte {
 	return b
 }
 
-func ReadDtos(content []byte) []models.CallbackDto {
-	var callbacks []models.CallbackDto
-	if err := json.Unmarshal(content, &callbacks); err != nil {
-		return []models.CallbackDto{}
+func extractSyscallFunctions(jsSource string) []models.CallbackDto {
+	callbacks := make([]models.CallbackDto, 0)
+
+	re := regexp.MustCompile(`function\s+(syscall_(\w+)_(\d+))`)
+	matches := re.FindAllStringSubmatch(jsSource, -1)
+
+	for _, match := range matches {
+		functionName := match[1]
+		callbackType := match[2]
+		sysno, err := strconv.Atoi(match[3])
+		if err != nil {
+			fmt.Printf("Error parsing sysno for function %s: %v\n", functionName, err)
+			continue
+		}
+
+		callback := models.CallbackDto{
+			CallbackSource: jsSource,
+			EntryPoint:     functionName,
+			Sysno:          sysno,
+			Type:           callbackType,
+		}
+		callbacks = append(callbacks, callback)
 	}
+
 	return callbacks
+}
+
+func ReadDtos(content []byte) []models.CallbackDto {
+	return extractSyscallFunctions(string(content))
 }
 
 func ReadSource(content []byte) string {
