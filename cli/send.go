@@ -20,7 +20,12 @@ func sendChange(address string, dtos []models.CallbackDto) string {
 	if e != nil {
 		return ""
 	}
-	return string(result)
+	var res models.ChangeResponse
+	err = json.Unmarshal(result, &res)
+	if err != nil {
+		return ""
+	}
+	return res.ToString()
 }
 
 func sendState(address string, entryPoint string, src string) string {
@@ -38,7 +43,12 @@ func sendState(address string, entryPoint string, src string) string {
 	if e != nil {
 		return ""
 	}
-	return string(result)
+	var res models.StateResponse
+	err = json.Unmarshal(result, &res)
+	if err != nil {
+		return ""
+	}
+	return res.ToString()
 }
 
 func sendInfo(address string) string {
@@ -54,7 +64,12 @@ func sendInfo(address string) string {
 	if e != nil {
 		return ""
 	}
-	return string(result)
+	var res models.InfoResponse
+	err = json.Unmarshal(result, &res)
+	if err != nil {
+		return ""
+	}
+	return res.ToString()
 }
 
 func sendGet(address string) string {
@@ -70,7 +85,12 @@ func sendGet(address string) string {
 	if e != nil {
 		return ""
 	}
-	return string(result)
+	var res models.GetResponse
+	err = json.Unmarshal(result, &res)
+	if err != nil {
+		return ""
+	}
+	return res.ToString()
 }
 
 func sendDelete(address string, options string, sysno int, callbackType string) string {
@@ -95,5 +115,10 @@ func sendDelete(address string, options string, sysno int, callbackType string) 
 	if e != nil {
 		return ""
 	}
-	return string(result)
+	var res models.DeleteResponse
+	err = json.Unmarshal(result, &res)
+	if err != nil {
+		return ""
+	}
+	return res.ToString()
 }
