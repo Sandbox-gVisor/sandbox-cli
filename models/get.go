@@ -12,11 +12,14 @@ type CallbackJson struct {
 	Src        string `json:"source"`
 }
 
-func (cj *CallbackJson) ToString() string {
+func (cj *CallbackJson) ToString(isVerbose bool) string {
 	res := fmt.Sprintf("  Type:          %s\n", cj.Type)
 	res += fmt.Sprintf("  Sysno:         %d\n", cj.Sysno)
 	res += fmt.Sprintf("  Entry-point:   %s\n", cj.EntryPoint)
-	res += fmt.Sprintf("  Src:           %s\n\n\n", cj.EntryPoint)
+	if isVerbose {
+		res += fmt.Sprintf("  Src:           %s", cj.Src)
+	}
+	res += "\n\n\n"
 	return res
 }
 
@@ -26,12 +29,12 @@ type GetResponse struct {
 	Message   string         `json:"message"`
 }
 
-func (r *GetResponse) ToString() string {
+func (r *GetResponse) ToString(isVerbose bool) string {
 	res := fmt.Sprintf("Type:           %s\n", r.Type)
 	res += fmt.Sprintf("Message:        %s\n", r.Message)
 	res += "Callbacks:\n"
 	for _, c := range r.Callbacks {
-		res += c.ToString()
+		res += c.ToString(isVerbose)
 	}
 	return res
 }

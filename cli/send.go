@@ -72,7 +72,7 @@ func sendInfo(address string) string {
 	return res.ToString()
 }
 
-func sendGet(address string) string {
+func sendGet(address string, isVerbose bool) string {
 	req := models.GetRequest{
 		Type: "current-callbacks",
 	}
@@ -90,7 +90,7 @@ func sendGet(address string) string {
 	if err != nil {
 		return ""
 	}
-	return res.ToString()
+	return res.ToString(isVerbose)
 }
 
 func sendDelete(address string, options string, sysno int, callbackType string) string {
