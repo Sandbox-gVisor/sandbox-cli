@@ -8,7 +8,7 @@ type Hook struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Args        string `json:"args"`
-	ReturnValue string `json:"return_value"`
+	ReturnValue string `json:"return-value"`
 }
 
 func (h *Hook) ToString() string {
