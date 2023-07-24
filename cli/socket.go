@@ -23,8 +23,5 @@ func SendToSocket(addr string, message []byte) ([]byte, error) {
 		fmt.Println("Ошибка при отправке JSON-запроса серверу:", err)
 		return nil, err
 	}
-	var buff []byte
-	buff, err = ioutil.ReadAll(conn)
-	fmt.Println(string(buff))
-	return buff, err
+	return ioutil.ReadAll(conn)
 }
