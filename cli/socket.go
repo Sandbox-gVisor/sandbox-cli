@@ -2,7 +2,7 @@ package cli
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net"
 )
 
@@ -23,5 +23,5 @@ func SendToSocket(addr string, message []byte) ([]byte, error) {
 		fmt.Println("Ошибка при отправке JSON-запроса серверу:", err)
 		return nil, err
 	}
-	return ioutil.ReadAll(conn)
+	return io.ReadAll(conn)
 }
