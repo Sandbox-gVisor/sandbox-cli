@@ -1,15 +1,29 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
-	"os"
-
 	"github.com/akamensky/argparse"
+	"os"
 )
+
+const AddressArgv = "CLI_ADDRESS"
+
+func replaceAddressWithSavedInArgv(address *string) error {
+	if *address == "" {
+		argvAddress := os.Getenv(AddressArgv)
+		if argvAddress == "" {
+			return errors.New("gvisor sock address required")
+		}
+		*address = argvAddress
+	}
+
+	return nil
+}
 
 func ParseCli() {
 	parser := argparse.NewParser("sandbox-cli", "tool for in-time configuraion gVisor")
-	address := parser.String("a", "address", &argparse.Options{Required: true, Help: "Socket address"})
+	address := parser.String("a", "address", &argparse.Options{Required: false, Help: "Socket address"})
 	changeCmd := parser.NewCommand("change", "Change callbacks")
 	infoCmd := parser.NewCommand("info", "Show info")
 	stateCmd := parser.NewCommand("state", "Change state")
@@ -27,6 +41,12 @@ func ParseCli() {
 	callbackType := deleteCmd.String("t", "type", &argparse.Options{Required: false, Help: "Callback type"})
 
 	err := parser.Parse(os.Args)
+	if err != nil {
+		fmt.Print(parser.Usage(err))
+		return
+	}
+
+	err = replaceAddressWithSavedInArgv(address)
 	if err != nil {
 		fmt.Print(parser.Usage(err))
 		return
