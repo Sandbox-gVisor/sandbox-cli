@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
@@ -25,7 +26,7 @@ func (cj *CallbackJson) ToString(isVerbose bool) string {
 	return res
 }
 
-type GetResponse struct {
+type GetCallbacksPayload struct {
 	Callbacks []CallbackJson `json:"callbacks"`
 }
 
@@ -37,12 +38,31 @@ func MakeGetCallbacksRequest() *Request {
 	return req
 }
 
-//func (r *GetResponse) ToString(isVerbose bool) string {
-//	res := fmt.Sprintf("Type:           %s\n", r.Type)
-//	res += fmt.Sprintf("Message:        %s\n", r.Message)
-//	res += "Callbacks:\n"
-//	for _, c := range r.Callbacks {
-//		res += c.ToString(isVerbose)
-//	}
-//	return res
-//}
+func MakeGetCallbacksPayloadFormatter(isVerbose bool) PayloadFormatter {
+	return func(payload any) (string, error) {
+		payloadBytes, err := json.Marshal(payload)
+		if err != nil {
+			return "", CliError{Message: "can`t process response payload", Cause: err}
+		}
+
+		var getCallbacksPayload GetCallbacksPayload
+		err = json.Unmarshal(payloadBytes, &getCallbacksPayload)
+		if err != nil {
+			return "", CliError{Message: "can`t process response payload", Cause: err}
+		}
+
+		return getCallbacksPayload.ToString(isVerbose), nil
+	}
+}
+
+func GetCallbackResponseHandler(isVerbose bool) ResponseHandler {
+	return &DefaultResponseHandler{MakeGetCallbacksPayloadFormatter(isVerbose)}
+}
+
+func (r *GetCallbacksPayload) ToString(isVerbose bool) string {
+	res := "\n\nCallbacks:\n"
+	for _, c := range r.Callbacks {
+		res += c.ToString(isVerbose)
+	}
+	return res
+}

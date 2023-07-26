@@ -31,7 +31,7 @@ func ParseCli() {
 	getCmd := parser.NewCommand("get", "Get current callbacks")
 	deleteCmd := parser.NewCommand("delete", "Unregister callbacks")
 
-	//verboseFlag := getCmd.Flag("v", "verbose", &argparse.Options{Required: false, Help: "Verbose output"})
+	verboseFlag := getCmd.Flag("v", "verbose", &argparse.Options{Required: false, Help: "Verbose output"})
 
 	changeFile := changeCmd.String("c", "conf", &argparse.Options{Required: true, Help: "file with config"})
 	entryPoint := stateCmd.String("e", "entry_point", &argparse.Options{Required: true, Help: "Entry point"})
@@ -43,7 +43,8 @@ func ParseCli() {
 
 	err := parser.Parse(os.Args)
 	if err != nil {
-		fmt.Print(parser.Usage(err))
+		fmt.Printf("\n%s\n\n%s",
+			models.MakeTextBoldAndColored("Bad arguments, check usage", models.RedColorText), parser.Usage(err))
 		return
 	}
 
@@ -62,20 +63,22 @@ func ParseCli() {
 		request = models.MakeChangeStateRequest(*entryPoint, ReadSource(ReadFile(*stateFile)))
 	} else if infoCmd.Happened() {
 		request = models.MakeHookInfoRequest()
+		responseHandler = models.HooksInfoResponseHandler()
 	} else if getCmd.Happened() {
 		request = models.MakeGetCallbacksRequest()
+		responseHandler = models.GetCallbackResponseHandler(*verboseFlag)
 	} else if deleteCmd.Happened() {
 		if *deleteAll {
 			request = models.MakeDeleteCallbacksRequest("all", *sysno, *callbackType)
 		} else {
 			request = models.MakeDeleteCallbacksRequest("all", *sysno, *callbackType)
 		}
-	} else {
-		err := fmt.Errorf("bad arguments, check usage")
-		fmt.Print(parser.Usage(err))
-		return
 	}
 
 	response, err := models.SendRequest(*address, request)
-	responseHandler.Handle(response)
+	if err != nil {
+		fmt.Printf("\nError: %s\n\n", models.MakeTextBoldAndColored(err.Error(), models.RedColorText))
+	} else {
+		responseHandler.Handle(response)
+	}
 }
