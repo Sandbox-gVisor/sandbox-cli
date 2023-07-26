@@ -19,7 +19,8 @@ func MakeTextColored(str string, color int) string {
 }
 
 const RedColorText = 31
+const GreenColorText = 32
 
-func MakeErrorText(str string) string {
-	return MakeTextBold(MakeTextColored(str, RedColorText))
+func MakeTextBoldAndColored(str string, color int) string {
+	return MakeTextBold(MakeTextColored(str, color))
 }

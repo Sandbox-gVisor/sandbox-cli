@@ -12,10 +12,37 @@ type Request struct {
 	Payload any    `json:"payload"`
 }
 
+const OkResponseType = "ok"
+const ErrorResponseType = "error"
+
 type Response struct {
 	Type    string `json:"type"`
 	Message string `json:"message"`
 	Payload any    `json:"payload"`
+}
+
+func (r *Response) ToString() string {
+	var responseType string
+	switch r.Type {
+	case OkResponseType:
+		responseType = MakeTextBoldAndColored(r.Type, GreenColorText)
+	case ErrorResponseType:
+		responseType = MakeTextBoldAndColored(r.Type, RedColorText)
+	default:
+		responseType = MakeTextBold(r.Type)
+	}
+
+	return fmt.Sprintf("Type:      %s;\nMessage:   %s\nPayload:   %v\n", responseType, r.Message, r.Payload)
+}
+
+type ResponseHandler interface {
+	handle(response *Response)
+}
+
+type DefaultResponseHandler struct{}
+
+func (handler *DefaultResponseHandler) handle(response *Response) {
+	fmt.Println(response.ToString())
 }
 
 func writeToConn(conn net.Conn, content []byte) error {
