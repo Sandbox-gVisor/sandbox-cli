@@ -52,8 +52,9 @@ func sendState(address string, entryPoint string, src string) string {
 }
 
 func sendInfo(address string) string {
-	req := models.InfoRequest{
-		Type: "change-info",
+	req := Request{
+		Type:    "change-info",
+		Payload: Empty{},
 	}
 	body, err := json.Marshal(req)
 	if err != nil {
@@ -70,10 +71,18 @@ func sendInfo(address string) string {
 		return ""
 	}
 	return res.ToString()
+
+}
+
+type Empty struct{}
+
+type Request struct {
+	Type    string `json:"type"`
+	Payload any    `json:"payload"`
 }
 
 func sendGet(address string, isVerbose bool) string {
-	req := models.GetRequest{
+	req := Request{
 		Type: "current-callbacks",
 	}
 	body, err := json.Marshal(req)
@@ -101,11 +110,16 @@ func sendDelete(address string, options string, sysno int, callbackType string) 
 			Sysno: sysno,
 		})
 	}
-	req := models.DeleteRequest{
+	req1 := models.DeleteRequest{
 		Type:    "unregister-callbacks",
 		Options: options,
 		List:    list,
 	}
+
+	req := Request{Type: "unregister-callbacks",
+		Payload: req1,
+	}
+
 	body, err := json.Marshal(req)
 	if err != nil {
 		fmt.Println(err)
