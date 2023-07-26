@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/akamensky/argparse"
 	"os"
+	"sandbox-cli/models"
 )
 
 const AddressArgv = "CLI_ADDRESS"
@@ -23,6 +24,7 @@ func replaceAddressWithSavedInArgv(address *string) error {
 
 func ParseCli() {
 	parser := argparse.NewParser("sandbox-cli", "tool for in-time configuraion gVisor")
+
 	address := parser.String("a", "address", &argparse.Options{Required: false, Help: "Socket address"})
 	changeCmd := parser.NewCommand("change", "Change callbacks")
 	infoCmd := parser.NewCommand("info", "Show info")
@@ -42,7 +44,8 @@ func ParseCli() {
 
 	err := parser.Parse(os.Args)
 	if err != nil {
-		fmt.Print(parser.Usage(err))
+		fmt.Printf("\n%s\n\n%s",
+			models.MakeTextBoldAndColored("Bad arguments, check usage", models.RedColorText), parser.Usage(err))
 		return
 	}
 
@@ -52,22 +55,31 @@ func ParseCli() {
 		return
 	}
 
+	var responseHandler models.ResponseHandler = &models.DefaultResponseHandler{}
+	var request *models.Request
+
 	if changeCmd.Happened() {
-		fmt.Println(sendChange(*address, ReadDtos(ReadFile(*changeFile))))
+		request = models.MakeChangeCallbacksRequest(*changeFile)
 	} else if stateCmd.Happened() {
-		fmt.Println(sendState(*address, *entryPoint, ReadSource(ReadFile(*stateFile))))
+		request = models.MakeChangeStateRequest(*entryPoint, *stateFile)
 	} else if infoCmd.Happened() {
-		fmt.Println(sendInfo(*address))
+		request = models.MakeHookInfoRequest()
+		responseHandler = models.HooksInfoResponseHandler()
 	} else if getCmd.Happened() {
-		fmt.Println(sendGet(*address, *verboseFlag))
+		request = models.MakeGetCallbacksRequest()
+		responseHandler = models.GetCallbackResponseHandler(*verboseFlag)
 	} else if deleteCmd.Happened() {
 		if *deleteAll {
-			fmt.Println(sendDelete(*address, "all", *sysno, *callbackType))
+			request = models.MakeDeleteCallbacksRequest("all", *sysno, *callbackType)
 		} else {
-			fmt.Println(sendDelete(*address, "list", *sysno, *callbackType))
+			request = models.MakeDeleteCallbacksRequest("list", *sysno, *callbackType)
 		}
+	}
+
+	response, err := models.SendRequest(*address, request)
+	if err != nil {
+		fmt.Printf("\nError: %s\n\n", models.MakeTextBoldAndColored(err.Error(), models.RedColorText))
 	} else {
-		err := fmt.Errorf("bad arguments, check usage")
-		fmt.Print(parser.Usage(err))
+		responseHandler.Handle(response)
 	}
 }

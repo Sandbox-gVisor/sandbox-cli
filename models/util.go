@@ -1,15 +1,27 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
-func makeTextBold(str string) string {
-	return fmt.Sprintf("\033[1m%s\033[0m", str)
+type CliError struct {
+	Message string
+	Cause   error
 }
 
-func makeTextUnderline(str string) string {
-	return fmt.Sprintf("\033[4m%s\033[0m", str)
+func (c CliError) Error() string {
+	return fmt.Sprintf("%s, cause: %v", c.Message, c.Cause)
 }
 
-func makeTextHighlight(str string) string {
-	return fmt.Sprintf("\u001B[7mS\b%s\u001B[0m", str)
+func MakeCliError(message string, cause error) CliError {
+	return CliError{Message: message, Cause: cause}
+}
+
+func ReadFile(filename string) []byte {
+	b, err := os.ReadFile(filename)
+	if err != nil {
+		return nil
+	}
+	return b
 }
