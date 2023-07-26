@@ -1,6 +1,8 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type GetRequest struct {
 	Type string `json:"type"`
@@ -24,17 +26,23 @@ func (cj *CallbackJson) ToString(isVerbose bool) string {
 }
 
 type GetResponse struct {
-	Type      string         `json:"type"`
 	Callbacks []CallbackJson `json:"callbacks"`
-	Message   string         `json:"message"`
 }
 
-func (r *GetResponse) ToString(isVerbose bool) string {
-	res := fmt.Sprintf("Type:           %s\n", r.Type)
-	res += fmt.Sprintf("Message:        %s\n", r.Message)
-	res += "Callbacks:\n"
-	for _, c := range r.Callbacks {
-		res += c.ToString(isVerbose)
+func MakeGetCallbacksRequest() *Request {
+	req := &Request{
+		Type:    "current-callbacks",
+		Payload: EmptyPayload{},
 	}
-	return res
+	return req
 }
+
+//func (r *GetResponse) ToString(isVerbose bool) string {
+//	res := fmt.Sprintf("Type:           %s\n", r.Type)
+//	res += fmt.Sprintf("Message:        %s\n", r.Message)
+//	res += "Callbacks:\n"
+//	for _, c := range r.Callbacks {
+//		res += c.ToString(isVerbose)
+//	}
+//	return res
+//}

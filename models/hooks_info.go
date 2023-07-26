@@ -1,13 +1,8 @@
 package models
 
 import (
-	"fmt"
 	"strings"
 )
-
-type InfoRequest struct {
-	Type string `json:"type"`
-}
 
 type Hook struct {
 	Name        string `json:"name"`
@@ -29,14 +24,13 @@ func (h *Hook) ToString() string {
 }
 
 type InfoResponse struct {
-	Type  string `json:"type"`
 	Hooks []Hook `json:"hooks"`
 }
 
-func (r *InfoResponse) ToString() string {
-	res := fmt.Sprintf("Type:   %s\nhooks:\n\n", r.Type)
-	for _, hook := range r.Hooks {
-		res += hook.ToString() + "\n\n"
+func MakeHookInfoRequest() *Request {
+	req := &Request{
+		Type:    "change-info",
+		Payload: EmptyPayload{},
 	}
-	return res
+	return req
 }

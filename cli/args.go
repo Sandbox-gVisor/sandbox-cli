@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/akamensky/argparse"
 	"os"
+	"sandbox-cli/models"
 )
 
 const AddressArgv = "CLI_ADDRESS"
@@ -30,7 +31,7 @@ func ParseCli() {
 	getCmd := parser.NewCommand("get", "Get current callbacks")
 	deleteCmd := parser.NewCommand("delete", "Unregister callbacks")
 
-	verboseFlag := getCmd.Flag("v", "verbose", &argparse.Options{Required: false, Help: "Verbose output"})
+	//verboseFlag := getCmd.Flag("v", "verbose", &argparse.Options{Required: false, Help: "Verbose output"})
 
 	changeFile := changeCmd.String("c", "conf", &argparse.Options{Required: true, Help: "file with config"})
 	entryPoint := stateCmd.String("e", "entry_point", &argparse.Options{Required: true, Help: "Entry point"})
@@ -52,22 +53,29 @@ func ParseCli() {
 		return
 	}
 
+	var responseHandler models.ResponseHandler = &models.DefaultResponseHandler{}
+	var request *models.Request
+
 	if changeCmd.Happened() {
-		fmt.Println(sendChange(*address, ReadDtos(ReadFile(*changeFile))))
+		request = models.MakeChangeCallbacksRequest(ReadDtos(ReadFile(*changeFile)))
 	} else if stateCmd.Happened() {
-		fmt.Println(sendState(*address, *entryPoint, ReadSource(ReadFile(*stateFile))))
+		request = models.MakeChangeStateRequest(*entryPoint, ReadSource(ReadFile(*stateFile)))
 	} else if infoCmd.Happened() {
-		fmt.Println(sendInfo(*address))
+		request = models.MakeHookInfoRequest()
 	} else if getCmd.Happened() {
-		fmt.Println(sendGet(*address, *verboseFlag))
+		request = models.MakeGetCallbacksRequest()
 	} else if deleteCmd.Happened() {
 		if *deleteAll {
-			fmt.Println(sendDelete(*address, "all", *sysno, *callbackType))
+			request = models.MakeDeleteCallbacksRequest("all", *sysno, *callbackType)
 		} else {
-			fmt.Println(sendDelete(*address, "list", *sysno, *callbackType))
+			request = models.MakeDeleteCallbacksRequest("all", *sysno, *callbackType)
 		}
 	} else {
 		err := fmt.Errorf("bad arguments, check usage")
 		fmt.Print(parser.Usage(err))
+		return
 	}
+
+	response, err := models.SendRequest(*address, request)
+	responseHandler.Handle(response)
 }

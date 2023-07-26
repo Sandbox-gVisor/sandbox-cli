@@ -21,28 +21,40 @@ type Response struct {
 	Payload any    `json:"payload"`
 }
 
-func (r *Response) ToString() string {
-	var responseType string
-	switch r.Type {
-	case OkResponseType:
-		responseType = MakeTextBoldAndColored(r.Type, GreenColorText)
-	case ErrorResponseType:
-		responseType = MakeTextBoldAndColored(r.Type, RedColorText)
-	default:
-		responseType = MakeTextBold(r.Type)
-	}
-
-	return fmt.Sprintf("Type:      %s;\nMessage:   %s\nPayload:   %v\n", responseType, r.Message, r.Payload)
-}
+type EmptyPayload struct{}
 
 type ResponseHandler interface {
-	handle(response *Response)
+	Handle(response *Response)
 }
 
-type DefaultResponseHandler struct{}
+type PayloadFormatter func(payload any) string
 
-func (handler *DefaultResponseHandler) handle(response *Response) {
-	fmt.Println(response.ToString())
+type DefaultResponseHandler struct {
+	PayloadFormatter PayloadFormatter
+}
+
+func (handler *DefaultResponseHandler) Handle(response *Response) {
+	var responseType string
+	switch response.Type {
+	case OkResponseType:
+		responseType = MakeTextBoldAndColored(response.Type, GreenColorText)
+	case ErrorResponseType:
+		responseType = MakeTextBoldAndColored(response.Type, RedColorText)
+	default:
+		responseType = MakeTextBold(response.Type)
+	}
+
+	var payloadText string
+	if handler.PayloadFormatter == nil {
+		payloadText = fmt.Sprintf("%v", response.Payload)
+	} else {
+		payloadText = handler.PayloadFormatter(response.Payload)
+	}
+
+	output := fmt.Sprintf("Type:      %s;\nMessage:   %s\nPayload:   %v\n",
+		responseType, response.Message, payloadText)
+
+	fmt.Println(output)
 }
 
 func writeToConn(conn net.Conn, content []byte) error {
