@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 )
 
 type GetRequest struct {
@@ -16,9 +17,9 @@ type CallbackJson struct {
 }
 
 func (cj *CallbackJson) ToString(isVerbose bool) string {
-	res := fmt.Sprintf("  Type:          %s\n", cj.Type)
-	res += fmt.Sprintf("  Sysno:         %d\n", cj.Sysno)
-	res += fmt.Sprintf("  Entry-point:   %s\n", cj.EntryPoint)
+	res := fmt.Sprintf("  Type:          %s\n", MakeTextBoldAndColored(cj.Type, OrangeColorText))
+	res += fmt.Sprintf("  Sysno:         %s\n", MakeTextBoldAndColored(strconv.Itoa(cj.Sysno), OrangeColorText))
+	res += fmt.Sprintf("  Entry-point:   %s\n", MakeTextBoldAndColored(cj.EntryPoint, OrangeColorText))
 	if isVerbose {
 		res += fmt.Sprintf("  Src:           %s", cj.Src)
 	}

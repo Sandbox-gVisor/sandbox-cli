@@ -20,6 +20,8 @@ func MakeTextColored(str string, color int) string {
 
 const RedColorText = 31
 const GreenColorText = 32
+const OrangeColorText = 33
+const BlueColorText = 34
 
 func MakeTextBoldAndColored(str string, color int) string {
 	return MakeTextBold(MakeTextColored(str, color))

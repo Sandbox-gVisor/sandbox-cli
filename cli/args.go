@@ -24,6 +24,7 @@ func replaceAddressWithSavedInArgv(address *string) error {
 
 func ParseCli() {
 	parser := argparse.NewParser("sandbox-cli", "tool for in-time configuraion gVisor")
+
 	address := parser.String("a", "address", &argparse.Options{Required: false, Help: "Socket address"})
 	changeCmd := parser.NewCommand("change", "Change callbacks")
 	infoCmd := parser.NewCommand("info", "Show info")
@@ -58,9 +59,9 @@ func ParseCli() {
 	var request *models.Request
 
 	if changeCmd.Happened() {
-		request = models.MakeChangeCallbacksRequest(ReadDtos(ReadFile(*changeFile)))
+		request = models.MakeChangeCallbacksRequest(*changeFile)
 	} else if stateCmd.Happened() {
-		request = models.MakeChangeStateRequest(*entryPoint, ReadSource(ReadFile(*stateFile)))
+		request = models.MakeChangeStateRequest(*entryPoint, *stateFile)
 	} else if infoCmd.Happened() {
 		request = models.MakeHookInfoRequest()
 		responseHandler = models.HooksInfoResponseHandler()
@@ -71,7 +72,7 @@ func ParseCli() {
 		if *deleteAll {
 			request = models.MakeDeleteCallbacksRequest("all", *sysno, *callbackType)
 		} else {
-			request = models.MakeDeleteCallbacksRequest("all", *sysno, *callbackType)
+			request = models.MakeDeleteCallbacksRequest("list", *sysno, *callbackType)
 		}
 	}
 

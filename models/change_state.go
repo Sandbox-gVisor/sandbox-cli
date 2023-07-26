@@ -13,9 +13,9 @@ func (r *StateResponse) ToString() string {
 	return "Type:   " + r.Type
 }
 
-func MakeChangeStateRequest(entryPoint string, src string) *Request {
+func MakeChangeStateRequest(entryPoint string, fileName string) *Request {
 	payload := StateRequest{
-		Src:        src,
+		Src:        "",
 		EntryPoint: entryPoint,
 	}
 
