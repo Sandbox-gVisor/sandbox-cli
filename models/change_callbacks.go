@@ -44,12 +44,16 @@ func extractSyscallFunctions(jsSource string) []CallbackDto {
 	return callbacks
 }
 
+type ChangeSyscallFromSourceDto struct {
+	Source string `json:"source"`
+}
+
 func MakeChangeCallbacksRequest(jsSourceFileName string) *Request {
-	dtos := extractSyscallFunctions(string(ReadFile(jsSourceFileName)))
-	
+	//dtos := extractSyscallFunctions(string(ReadFile(jsSourceFileName)))
+
 	req := &Request{
-		Type:    "change-callbacks",
-		Payload: ChangeRequest{Callbacks: dtos},
+		Type:    "change-callbacks-from-source",
+		Payload: ChangeSyscallFromSourceDto{Source: string(ReadFile(jsSourceFileName))},
 	}
 	return req
 }

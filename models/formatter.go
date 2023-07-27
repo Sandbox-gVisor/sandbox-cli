@@ -41,7 +41,7 @@ func (handler *DefaultResponseHandler) Handle(response *Response) {
 
 	headers = append(headers, header{"Type", responseType})
 	if response.Message != "" {
-		headers = append(headers, header{"Message", response.Message})
+		headers = append(headers, header{"gVisor says", response.Message})
 	}
 
 	formatter := handler.PayloadFormatter
