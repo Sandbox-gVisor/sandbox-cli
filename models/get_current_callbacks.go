@@ -3,12 +3,11 @@ package models
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strconv"
+	"strings"
 )
 
-type GetRequest struct {
-	Type string `json:"type"`
-}
 type CallbackJson struct {
 	Sysno          int      `json:"sysno"`
 	EntryPoint     string   `json:"entry-point"`
@@ -18,6 +17,41 @@ type CallbackJson struct {
 	Type           string   `json:"type"`
 }
 
+func highlightJsSyntax(jsSource string) string {
+	type colorScheme struct {
+		patterns []string
+		color    int
+	}
+
+	schemes := []colorScheme{
+		{
+			patterns: []string{"function", "if", "return", "const", "let", "var"},
+			color:    GreenColorText,
+		},
+		{
+			patterns: []string{`\(`, `\)`},
+			color:    OrangeColorText,
+		},
+		{
+			patterns: []string{`"`, "{", "}"},
+			color:    RedColorText,
+		},
+	}
+
+	removeEscaping := func(str string) string {
+		return strings.Replace(str, `\`, "", -1)
+	}
+
+	for _, scheme := range schemes {
+		for _, pattern := range scheme.patterns {
+			reg := regexp.MustCompile(pattern)
+			jsSource = reg.ReplaceAllString(jsSource, MakeTextBoldAndColored(removeEscaping(pattern), scheme.color))
+		}
+	}
+
+	return jsSource
+}
+
 func (cj *CallbackJson) ToString(isVerbose bool) string {
 	res := fmt.Sprintf("Type:          %s\n", MakeTextBoldAndColored(cj.Type, OrangeColorText))
 	res += fmt.Sprintf("Sysno:         %s\n", MakeTextBoldAndColored(strconv.Itoa(cj.Sysno), OrangeColorText))
@@ -25,7 +59,7 @@ func (cj *CallbackJson) ToString(isVerbose bool) string {
 	strArgs := fmt.Sprintf("%v", cj.CallbackArgs)
 	res += fmt.Sprintf("Args:          %s\n", MakeTextBoldAndColored(strArgs, OrangeColorText))
 	if isVerbose {
-		res += fmt.Sprintf("Body:\n\n%s", cj.CallbackBody)
+		res += fmt.Sprintf("Body:\n\n%s", highlightJsSyntax(cj.CallbackBody))
 	}
 	res += "\n\n\n"
 	return res
