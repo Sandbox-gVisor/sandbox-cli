@@ -34,7 +34,7 @@ func writeToConn(conn net.Conn, content []byte) error {
 }
 
 func SendRequest(addr string, request *Request) (*Response, error) {
-	conn, err := net.Dial("unix", addr)
+	conn, err := net.Dial("tcp", addr)
 	if err != nil {
 		return nil, MakeCliError("gvisor connection error", err)
 	}

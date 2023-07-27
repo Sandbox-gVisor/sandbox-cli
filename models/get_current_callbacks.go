@@ -10,18 +10,22 @@ type GetRequest struct {
 	Type string `json:"type"`
 }
 type CallbackJson struct {
-	Type       string `json:"type"`
-	Sysno      int    `json:"sysno"`
-	EntryPoint string `json:"entry-point"`
-	Src        string `json:"source"`
+	Sysno          int      `json:"sysno"`
+	EntryPoint     string   `json:"entry-point"`
+	CallbackSource string   `json:"source"`
+	CallbackBody   string   `json:"body"`
+	CallbackArgs   []string `json:"args"`
+	Type           string   `json:"type"`
 }
 
 func (cj *CallbackJson) ToString(isVerbose bool) string {
-	res := fmt.Sprintf("  Type:          %s\n", MakeTextBoldAndColored(cj.Type, OrangeColorText))
-	res += fmt.Sprintf("  Sysno:         %s\n", MakeTextBoldAndColored(strconv.Itoa(cj.Sysno), OrangeColorText))
-	res += fmt.Sprintf("  Entry-point:   %s\n", MakeTextBoldAndColored(cj.EntryPoint, OrangeColorText))
+	res := fmt.Sprintf("Type:          %s\n", MakeTextBoldAndColored(cj.Type, OrangeColorText))
+	res += fmt.Sprintf("Sysno:         %s\n", MakeTextBoldAndColored(strconv.Itoa(cj.Sysno), OrangeColorText))
+	res += fmt.Sprintf("Entry-point:   %s\n", MakeTextBoldAndColored(cj.EntryPoint, OrangeColorText))
+	strArgs := fmt.Sprintf("%v", cj.CallbackArgs)
+	res += fmt.Sprintf("Args:          %s\n", MakeTextBoldAndColored(strArgs, OrangeColorText))
 	if isVerbose {
-		res += fmt.Sprintf("  Src:           %s", cj.Src)
+		res += fmt.Sprintf("Body:\n\n%s", cj.CallbackBody)
 	}
 	res += "\n\n\n"
 	return res

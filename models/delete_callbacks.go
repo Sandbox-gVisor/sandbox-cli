@@ -1,7 +1,5 @@
 package models
 
-import "fmt"
-
 type DeleteCallbackJson struct {
 	Sysno int    `json:"sysno"`
 	Type  string `json:"type"`
@@ -13,7 +11,6 @@ type DeleteRequest struct {
 }
 
 func MakeDeleteCallbacksRequest(options string, sysno int, callbackType string) *Request {
-	fmt.Println(options)
 	var list []DeleteCallbackJson
 	if options != "all" {
 		list = append(list, DeleteCallbackJson{
