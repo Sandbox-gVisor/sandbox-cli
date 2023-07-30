@@ -35,7 +35,6 @@ func ParseCli() {
 	verboseFlag := getCmd.Flag("v", "verbose", &argparse.Options{Required: false, Help: "Verbose output"})
 
 	changeFile := changeCmd.String("c", "conf", &argparse.Options{Required: true, Help: "file with config"})
-	entryPoint := stateCmd.String("e", "entry_point", &argparse.Options{Required: true, Help: "Entry point"})
 	stateFile := stateCmd.String("c", "conf", &argparse.Options{Required: true, Help: "file with source"})
 
 	deleteAll := deleteCmd.Flag("u", "all", &argparse.Options{Required: false, Help: "Unregister all callbacks"})
@@ -61,7 +60,7 @@ func ParseCli() {
 	if changeCmd.Happened() {
 		request = models.MakeChangeCallbacksRequest(*changeFile)
 	} else if stateCmd.Happened() {
-		request = models.MakeChangeStateRequest(*entryPoint, *stateFile)
+		request = models.MakeChangeStateRequest(*stateFile)
 	} else if infoCmd.Happened() {
 		request = models.MakeHookInfoRequest()
 		responseHandler = models.HooksInfoResponseHandler()

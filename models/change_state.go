@@ -13,10 +13,10 @@ func (r *StateResponse) ToString() string {
 	return "Type:   " + r.Type
 }
 
-func MakeChangeStateRequest(entryPoint string, fileName string) *Request {
+func MakeChangeStateRequest(fileName string) *Request {
 	payload := StateRequest{
-		Src:        "",
-		EntryPoint: entryPoint,
+		Src:        string(ReadFile(fileName)),
+		EntryPoint: "",
 	}
 
 	req := &Request{
