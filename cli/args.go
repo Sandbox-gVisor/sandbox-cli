@@ -27,7 +27,7 @@ func ParseCli() {
 
 	address := parser.String("a", "address", &argparse.Options{Required: false, Help: "Socket address"})
 	changeCmd := parser.NewCommand("change", "Change callbacks")
-	infoCmd := parser.NewCommand("info", "Show info")
+	infoCmd := parser.NewCommand("man", "Show man for hooks")
 	stateCmd := parser.NewCommand("state", "Change state")
 	getCmd := parser.NewCommand("get", "Get current callbacks")
 	deleteCmd := parser.NewCommand("delete", "Unregister callbacks")
