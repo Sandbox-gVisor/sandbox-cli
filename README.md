@@ -1,6 +1,6 @@
 # gVisor Sandbox CLI
 
-`sandbox-cli` is a command-line tool designed for in-time configuration of gVisor, an open-source container runtime sandbox. This CLI tool allows users to perform various operations related to gVisor's callback functions and state management.
+`sandbox-cli` is a command-line tool designed for in-time configuration of gVisor Sandbox, an open-source container runtime sandbox. This CLI tool allows users to perform various operations related to gVisor's callback functions and state management.
 
 ## Usage
 
@@ -10,6 +10,13 @@ sandbox-cli <Command> [-h|--help] [-a|--address "<value>"]
 
 ## Hint: you can set address in environment
 `export CLI_ADDRESS=localhost:8080`
+
+## Arguments
+
+The following arguments are available for the CLI:
+
+- `-h`, `--help`: Print help information. Use this argument to display the CLI's usage and available commands.
+- `-a`, `--address "<value>"`: Socket address. This argument allows users to specify the socket address for communication.
 
 ## Commands
 
@@ -33,13 +40,6 @@ Get current callbacks. Use this command to retrieve the currently active callbac
 
 Unregister callbacks. This command lets users unregister or remove specific callback functions from gVisor.
 
-## Arguments
-
-The following arguments are available for the CLI:
-
-- `-h`, `--help`: Print help information. Use this argument to display the CLI's usage and available commands.
-- `-a`, `--address "<value>"`: Socket address. This argument allows users to specify the socket address for communication.
-
 ## Example Usage
 
 ### Get Current Callbacks with verbose output:
@@ -53,7 +53,7 @@ This command retrieves and displays the currently active callback functions.
 ### Change State:
 
 ```
-sandbox-cli state -a "127.0.0.1:8080 -c change_state.js"
+sandbox-cli state -a "127.0.0.1:8080" -c change_state.js
 ```
 
 Using this command, users can change the state of gVisor by providing the desired socket address (e.g., "127.0.0.1:8080").
