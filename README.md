@@ -8,15 +8,15 @@
 sandbox-cli <Command> [-h|--help] [-a|--address "<value>"]
 ```
 
-## Hint: you can set address in environment
-`export CLI_ADDRESS=localhost:8080`
-
 ## Arguments
 
-The following arguments are available for the CLI:
+The following arguments are available for the CLI and every command:
 
 - `-h`, `--help`: Print help information. Use this argument to display the CLI's usage and available commands.
 - `-a`, `--address "<value>"`: Socket address. This argument allows users to specify the socket address for communication.
+
+## Hint: you can set address in environment
+`export CLI_ADDRESS=localhost:8080`
 
 ## Commands
 
