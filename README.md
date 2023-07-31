@@ -42,10 +42,10 @@ The following arguments are available for the CLI:
 
 ## Example Usage
 
-### Get Current Callbacks:
+### Get Current Callbacks with verbose output:
 
 ```
-sandbox-cli get
+sandbox-cli get --verbose
 ```
 
 This command retrieves and displays the currently active callback functions.
@@ -53,15 +53,15 @@ This command retrieves and displays the currently active callback functions.
 ### Change State:
 
 ```
-sandbox-cli state -a "127.0.0.1:8080"
+sandbox-cli state -a "127.0.0.1:8080 -c change_state.js"
 ```
 
 Using this command, users can change the state of gVisor by providing the desired socket address (e.g., "127.0.0.1:8080").
 
-### Unregister Callbacks:
+### Unregister Callback after syscall 59(exec):
 
 ```
-sandbox-cli delete
+sandbox-cli delete -s 59 -t after
 ```
 
 This command allows users to unregister specific callback functions from gVisor.
@@ -75,4 +75,3 @@ sandbox-cli man
 ```
 
 This will provide comprehensive information about the hooks and their usage in the JavaScript engine integrated into gVisor.
- provided information is a fictional representation of a CLI tool for gVisor. The actual CLI tool and its usage may vary based on the specific implementation and requirements.
