@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"sandbox-cli/internal/communication"
 	"sandbox-cli/internal/errors"
-	"sandbox-cli/internal/pretty_output"
+	"sandbox-cli/internal/prettyoutput"
 	"strings"
 )
 
@@ -16,11 +16,11 @@ type HookInfoDto struct {
 }
 
 func addStyleToHeader(header string) string {
-	return pretty_output.MakeTextBold(strings.ToUpper(header))
+	return prettyoutput.MakeTextBold(strings.ToUpper(header))
 }
 
 func (h *HookInfoDto) ToString() string {
-	res := addStyleToHeader("Name:") + "                " + pretty_output.MakeTextHighlight(h.Name) + "\n"
+	res := addStyleToHeader("Name:") + "                " + prettyoutput.MakeTextHighlight(h.Name) + "\n"
 	res += addStyleToHeader("Description") + "          " + h.Description + "\n"
 	res += addStyleToHeader("Args") + "                 " + h.Args + "\n"
 	res += addStyleToHeader("Return values") + "        " + h.ReturnValue + "\n"
@@ -42,7 +42,7 @@ func (r *HookInfoResponse) ToString() string {
 func MakeHookInfoRequest() *communication.Request {
 	req := &communication.Request{
 		Type:    "change-info",
-		Payload: pretty_output.EmptyPayload{},
+		Payload: prettyoutput.EmptyPayload{},
 	}
 	return req
 }
@@ -62,6 +62,6 @@ func hookInfoPayloadFormatter(payload any) (string, error) {
 	return infoPayload.ToString(), nil
 }
 
-func HooksInfoResponseHandler() pretty_output.ResponseFormatter {
-	return &pretty_output.DefaultResponseFormatter{PayloadFormatter: hookInfoPayloadFormatter}
+func HooksInfoResponseHandler() prettyoutput.ResponseFormatter {
+	return &prettyoutput.DefaultResponseFormatter{PayloadFormatter: hookInfoPayloadFormatter}
 }

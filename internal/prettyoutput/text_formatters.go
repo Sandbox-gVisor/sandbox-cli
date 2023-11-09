@@ -1,4 +1,4 @@
-package pretty_output
+package prettyoutput
 
 import "fmt"
 
