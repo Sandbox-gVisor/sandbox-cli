@@ -36,15 +36,11 @@ func (handler *DefaultResponseHandler) Handle(response *communication.Response) 
 		responseType = MakeTextBold(response.Type)
 	}
 
-	type header struct {
-		name  string
-		value string
-	}
-	var headers []header
+	headers := make(map[string]string)
 
-	headers = append(headers, header{"Type", responseType})
+	headers["Type"] = responseType
 	if response.Message != "" {
-		headers = append(headers, header{"gVisor says", response.Message})
+		headers["gVisor says"] = response.Message
 	}
 
 	formatter := handler.PayloadFormatter
@@ -57,12 +53,12 @@ func (handler *DefaultResponseHandler) Handle(response *communication.Response) 
 		payloadText = MakeTextBoldAndColored(err.Error(), RedColorText)
 	}
 	if payloadText != "" {
-		headers = append(headers, header{"Payload", payloadText})
+		headers["Payload"] = payloadText
 	}
 
 	output := "\n"
-	for _, h := range headers {
-		output += fmt.Sprintf("%s: %s\n", MakeTextBold(h.name), h.value)
+	for key, val := range headers {
+		output += fmt.Sprintf("%s: %s\n", MakeTextBold(key), val)
 	}
 
 	fmt.Println(output)
