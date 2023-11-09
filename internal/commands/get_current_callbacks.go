@@ -97,8 +97,8 @@ func MakeGetCallbacksPayloadFormatter(isVerbose bool) pretty_output.PayloadForma
 	}
 }
 
-func GetCallbackResponseHandler(isVerbose bool) pretty_output.ResponseHandler {
-	return &pretty_output.DefaultResponseHandler{PayloadFormatter: MakeGetCallbacksPayloadFormatter(isVerbose)}
+func GetCallbackResponseHandler(isVerbose bool) pretty_output.ResponseFormatter {
+	return &pretty_output.DefaultResponseFormatter{PayloadFormatter: MakeGetCallbacksPayloadFormatter(isVerbose)}
 }
 
 func (r *GetCallbacksPayload) ToString(isVerbose bool) string {

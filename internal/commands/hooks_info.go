@@ -62,6 +62,6 @@ func hookInfoPayloadFormatter(payload any) (string, error) {
 	return infoPayload.ToString(), nil
 }
 
-func HooksInfoResponseHandler() pretty_output.ResponseHandler {
-	return &pretty_output.DefaultResponseHandler{PayloadFormatter: hookInfoPayloadFormatter}
+func HooksInfoResponseHandler() pretty_output.ResponseFormatter {
+	return &pretty_output.DefaultResponseFormatter{PayloadFormatter: hookInfoPayloadFormatter}
 }

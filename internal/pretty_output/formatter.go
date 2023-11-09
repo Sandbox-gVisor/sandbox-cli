@@ -7,8 +7,8 @@ import (
 
 type EmptyPayload struct{}
 
-type ResponseHandler interface {
-	Handle(response *communication.Response)
+type ResponseFormatter interface {
+	Format(response *communication.Response) string
 }
 
 type PayloadFormatter func(payload any) (string, error)
@@ -21,11 +21,11 @@ func DefaultPayloadFormatter(payload any) (string, error) {
 	return payloadText, nil
 }
 
-type DefaultResponseHandler struct {
+type DefaultResponseFormatter struct {
 	PayloadFormatter PayloadFormatter
 }
 
-func (handler *DefaultResponseHandler) Handle(response *communication.Response) {
+func (handler *DefaultResponseFormatter) Format(response *communication.Response) string {
 	var responseType string
 	switch response.Type {
 	case communication.OkResponseType:
@@ -61,5 +61,5 @@ func (handler *DefaultResponseHandler) Handle(response *communication.Response) 
 		output += fmt.Sprintf("%s: %s\n", MakeTextBold(key), val)
 	}
 
-	fmt.Println(output)
+	return output
 }

@@ -56,7 +56,7 @@ func ParseCli() {
 		return
 	}
 
-	var responseHandler models2.ResponseHandler = &models2.DefaultResponseHandler{}
+	var responseHandler models2.ResponseFormatter = &models2.DefaultResponseFormatter{}
 	var request *communication.Request
 
 	if changeCmd.Happened() {
@@ -81,6 +81,6 @@ func ParseCli() {
 	if err != nil {
 		fmt.Printf("\nError: %s\n\n", models2.MakeTextBoldAndColored(err.Error(), models2.RedColorText))
 	} else {
-		responseHandler.Handle(response)
+		fmt.Printf(responseHandler.Format(response))
 	}
 }
