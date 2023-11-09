@@ -1,4 +1,8 @@
-package models
+package commands
+
+import (
+	"sandbox-cli/internal/communication"
+)
 
 type DeleteCallbackJson struct {
 	Sysno int    `json:"sysno"`
@@ -10,7 +14,7 @@ type DeleteRequest struct {
 	List    []DeleteCallbackJson `json:"list"`
 }
 
-func MakeDeleteCallbacksRequest(options string, sysno int, callbackType string) *Request {
+func MakeDeleteCallbacksRequest(options string, sysno int, callbackType string) *communication.Request {
 	var list []DeleteCallbackJson
 	if options != "all" {
 		list = append(list, DeleteCallbackJson{
@@ -23,7 +27,7 @@ func MakeDeleteCallbacksRequest(options string, sysno int, callbackType string) 
 		List:    list,
 	}
 
-	req := &Request{
+	req := &communication.Request{
 		Type:    "unregister-callbacks",
 		Payload: payload,
 	}

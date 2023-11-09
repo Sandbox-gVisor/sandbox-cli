@@ -1,4 +1,4 @@
-package models
+package pretty_output
 
 import "fmt"
 

@@ -1,11 +1,14 @@
-package models
+package pretty_output
 
-import "fmt"
+import (
+	"fmt"
+	"sandbox-cli/internal/communication"
+)
 
 type EmptyPayload struct{}
 
 type ResponseHandler interface {
-	Handle(response *Response)
+	Handle(response *communication.Response)
 }
 
 type PayloadFormatter func(payload any) (string, error)
@@ -22,12 +25,12 @@ type DefaultResponseHandler struct {
 	PayloadFormatter PayloadFormatter
 }
 
-func (handler *DefaultResponseHandler) Handle(response *Response) {
+func (handler *DefaultResponseHandler) Handle(response *communication.Response) {
 	var responseType string
 	switch response.Type {
-	case OkResponseType:
+	case communication.OkResponseType:
 		responseType = MakeTextBoldAndColored(response.Type, GreenColorText)
-	case ErrorResponseType:
+	case communication.ErrorResponseType:
 		responseType = MakeTextBoldAndColored(response.Type, RedColorText)
 	default:
 		responseType = MakeTextBold(response.Type)

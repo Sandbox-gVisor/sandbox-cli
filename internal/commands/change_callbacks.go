@@ -1,8 +1,9 @@
-package models
+package commands
 
 import (
 	"fmt"
 	"regexp"
+	"sandbox-cli/internal/communication"
 	"strconv"
 )
 
@@ -48,10 +49,10 @@ type ChangeSyscallFromSourceDto struct {
 	Source string `json:"source"`
 }
 
-func MakeChangeCallbacksRequest(jsSourceFileName string) *Request {
+func MakeChangeCallbacksRequest(jsSourceFileName string) *communication.Request {
 	//dtos := extractSyscallFunctions(string(ReadFile(jsSourceFileName)))
 
-	req := &Request{
+	req := &communication.Request{
 		Type:    "change-callbacks-from-source",
 		Payload: ChangeSyscallFromSourceDto{Source: string(ReadFile(jsSourceFileName))},
 	}

@@ -1,11 +1,13 @@
-package cli
+package internal
 
 import (
 	"errors"
 	"fmt"
 	"github.com/akamensky/argparse"
 	"os"
-	"sandbox-cli/models"
+	"sandbox-cli/internal/commands"
+	"sandbox-cli/internal/communication"
+	models2 "sandbox-cli/internal/pretty_output"
 )
 
 const AddressArgv = "CLI_ADDRESS"
@@ -44,7 +46,7 @@ func ParseCli() {
 	err := parser.Parse(os.Args)
 	if err != nil {
 		fmt.Printf("\n%s\n\n%s",
-			models.MakeTextBoldAndColored("Bad arguments, check usage", models.RedColorText), parser.Usage(err))
+			models2.MakeTextBoldAndColored("Bad arguments, check usage", models2.RedColorText), parser.Usage(err))
 		return
 	}
 
@@ -54,30 +56,30 @@ func ParseCli() {
 		return
 	}
 
-	var responseHandler models.ResponseHandler = &models.DefaultResponseHandler{}
-	var request *models.Request
+	var responseHandler models2.ResponseHandler = &models2.DefaultResponseHandler{}
+	var request *communication.Request
 
 	if changeCmd.Happened() {
-		request = models.MakeChangeCallbacksRequest(*changeFile)
+		request = commands.MakeChangeCallbacksRequest(*changeFile)
 	} else if stateCmd.Happened() {
-		request = models.MakeChangeStateRequest(*stateFile)
+		request = commands.MakeChangeStateRequest(*stateFile)
 	} else if infoCmd.Happened() {
-		request = models.MakeHookInfoRequest()
-		responseHandler = models.HooksInfoResponseHandler()
+		request = commands.MakeHookInfoRequest()
+		responseHandler = commands.HooksInfoResponseHandler()
 	} else if getCmd.Happened() {
-		request = models.MakeGetCallbacksRequest()
-		responseHandler = models.GetCallbackResponseHandler(*verboseFlag)
+		request = commands.MakeGetCallbacksRequest()
+		responseHandler = commands.GetCallbackResponseHandler(*verboseFlag)
 	} else if deleteCmd.Happened() {
 		if *deleteAll {
-			request = models.MakeDeleteCallbacksRequest("all", *sysno, *callbackType)
+			request = commands.MakeDeleteCallbacksRequest("all", *sysno, *callbackType)
 		} else {
-			request = models.MakeDeleteCallbacksRequest("list", *sysno, *callbackType)
+			request = commands.MakeDeleteCallbacksRequest("list", *sysno, *callbackType)
 		}
 	}
 
-	response, err := models.SendRequest(*address, request)
+	response, err := communication.SendRequest(*address, request)
 	if err != nil {
-		fmt.Printf("\nError: %s\n\n", models.MakeTextBoldAndColored(err.Error(), models.RedColorText))
+		fmt.Printf("\nError: %s\n\n", models2.MakeTextBoldAndColored(err.Error(), models2.RedColorText))
 	} else {
 		responseHandler.Handle(response)
 	}

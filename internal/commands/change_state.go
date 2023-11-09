@@ -1,4 +1,8 @@
-package models
+package commands
+
+import (
+	"sandbox-cli/internal/communication"
+)
 
 type StateRequest struct {
 	EntryPoint string `json:"entry-point"`
@@ -13,13 +17,13 @@ func (r *StateResponse) ToString() string {
 	return "Type:   " + r.Type
 }
 
-func MakeChangeStateRequest(fileName string) *Request {
+func MakeChangeStateRequest(fileName string) *communication.Request {
 	payload := StateRequest{
 		Src:        string(ReadFile(fileName)),
 		EntryPoint: "",
 	}
 
-	req := &Request{
+	req := &communication.Request{
 		Type:    "change-state",
 		Payload: payload,
 	}
