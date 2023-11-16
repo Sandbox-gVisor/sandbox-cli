@@ -59,12 +59,12 @@ func (cj *CallbackJson) ToString(isVerbose bool) string {
 	res := fmt.Sprintf("Type:          %s\n", prettyoutput.MakeTextBoldAndColored(cj.Type, prettyoutput.OrangeColorText))
 	res += fmt.Sprintf("Sysno:         %s\n", prettyoutput.MakeTextBoldAndColored(strconv.Itoa(cj.Sysno), prettyoutput.OrangeColorText))
 	res += fmt.Sprintf("Entry-point:   %s\n", prettyoutput.MakeTextBoldAndColored(cj.EntryPoint, prettyoutput.OrangeColorText))
-	strArgs := fmt.Sprintf("%v", cj.CallbackArgs)
+	strArgs := fmt.Sprintf("%v", strings.Join(cj.CallbackArgs, ", "))
 	res += fmt.Sprintf("Args:          %s\n", prettyoutput.MakeTextBoldAndColored(strArgs, prettyoutput.OrangeColorText))
 	if isVerbose {
 		res += fmt.Sprintf("Body:\n\n%s", highlightJsSyntax(cj.CallbackBody))
 	}
-	res += "\n\n\n"
+	res += "\n\n"
 	return res
 }
 
@@ -75,7 +75,7 @@ type GetCallbacksPayload struct {
 func MakeGetCallbacksRequest() *communication.Request {
 	req := &communication.Request{
 		Type:    "current-callbacks",
-		Payload: prettyoutput.EmptyPayload{},
+		Payload: communication.EmptyPayload{},
 	}
 	return req
 }
@@ -102,7 +102,7 @@ func GetCallbackResponseHandler(isVerbose bool) prettyoutput.ResponseFormatter {
 }
 
 func (r *GetCallbacksPayload) ToString(isVerbose bool) string {
-	res := "\n\nCallbacks:\n"
+	res := "\n\nCallbacks:\n\n"
 	for _, c := range r.Callbacks {
 		res += c.ToString(isVerbose)
 	}

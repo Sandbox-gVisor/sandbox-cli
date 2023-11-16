@@ -8,6 +8,8 @@ import (
 	"sandbox-cli/internal/errors"
 )
 
+type EmptyPayload struct{}
+
 type Request struct {
 	Type    string `json:"type"`
 	Payload any    `json:"payload"`

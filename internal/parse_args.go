@@ -81,6 +81,6 @@ func ParseCli() {
 	if err != nil {
 		fmt.Printf("\nError: %s\n\n", models2.MakeTextBoldAndColored(err.Error(), models2.RedColorText))
 	} else {
-		fmt.Printf(responseHandler.Format(response))
+		fmt.Printf("%v\n", responseHandler.Format(response))
 	}
 }

@@ -5,8 +5,6 @@ import (
 	"sandbox-cli/internal/communication"
 )
 
-type EmptyPayload struct{}
-
 type ResponseFormatter interface {
 	Format(response *communication.Response) string
 }
@@ -36,11 +34,17 @@ func (handler *DefaultResponseFormatter) Format(response *communication.Response
 		responseType = MakeTextBold(response.Type)
 	}
 
-	headers := make(map[string]string)
+	// map is not used because we won't special order of headers to be printed
+	type header struct {
+		name  string
+		value string
+	}
 
-	headers["Type"] = responseType
+	headers := make([]header, 0)
+
+	headers = append(headers, header{"Type", responseType})
 	if response.Message != "" {
-		headers["gVisor says"] = response.Message
+		headers = append(headers, header{"gVisor says", response.Message})
 	}
 
 	formatter := handler.PayloadFormatter
@@ -53,12 +57,12 @@ func (handler *DefaultResponseFormatter) Format(response *communication.Response
 		payloadText = MakeTextBoldAndColored(err.Error(), RedColorText)
 	}
 	if payloadText != "" {
-		headers["Payload"] = payloadText
+		headers = append(headers, header{"Payload", payloadText})
 	}
 
 	output := "\n"
-	for key, val := range headers {
-		output += fmt.Sprintf("%s: %s\n", MakeTextBold(key), val)
+	for _, h := range headers {
+		output += fmt.Sprintf("%s: %s\n", MakeTextBold(h.name), h.value)
 	}
 
 	return output
