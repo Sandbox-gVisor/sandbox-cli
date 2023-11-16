@@ -41,7 +41,7 @@ func (r *HookInfoResponse) ToString() string {
 
 func MakeHookInfoRequest() *communication.Request {
 	req := &communication.Request{
-		Type:    "change-info",
+		Type:    "hooks-info",
 		Payload: communication.EmptyPayload{},
 	}
 	return req

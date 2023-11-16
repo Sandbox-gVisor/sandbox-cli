@@ -28,7 +28,6 @@ func ParseCli() {
 	parser := argparse.NewParser("sandbox-cli", "tool for in-time configuraion gVisor")
 
 	address := parser.String("a", "address", &argparse.Options{Required: false, Help: "Socket address"})
-	changeCmd := parser.NewCommand("change", "Change callbacks")
 	infoCmd := parser.NewCommand("man", "Show man for hooks")
 	stateCmd := parser.NewCommand("state", "Change state")
 	getCmd := parser.NewCommand("get", "Get current callbacks")
@@ -36,7 +35,6 @@ func ParseCli() {
 
 	verboseFlag := getCmd.Flag("v", "verbose", &argparse.Options{Required: false, Help: "Verbose output"})
 
-	changeFile := changeCmd.String("c", "conf", &argparse.Options{Required: true, Help: "file with config"})
 	stateFile := stateCmd.String("c", "conf", &argparse.Options{Required: true, Help: "file with source"})
 
 	deleteAll := deleteCmd.Flag("u", "all", &argparse.Options{Required: false, Help: "Unregister all callbacks"})
@@ -59,9 +57,7 @@ func ParseCli() {
 	var responseHandler models2.ResponseFormatter = &models2.DefaultResponseFormatter{}
 	var request *communication.Request
 
-	if changeCmd.Happened() {
-		request = commands.MakeChangeCallbacksRequest(*changeFile)
-	} else if stateCmd.Happened() {
+	if stateCmd.Happened() {
 		request = commands.MakeChangeStateRequest(*stateFile)
 	} else if infoCmd.Happened() {
 		request = commands.MakeHookInfoRequest()
