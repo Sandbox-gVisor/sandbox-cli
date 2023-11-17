@@ -1,7 +1,10 @@
-package models
+package commands
 
 import (
 	"encoding/json"
+	"sandbox-cli/internal/communication"
+	"sandbox-cli/internal/errors"
+	"sandbox-cli/internal/prettyoutput"
 	"strings"
 )
 
@@ -13,11 +16,11 @@ type HookInfoDto struct {
 }
 
 func addStyleToHeader(header string) string {
-	return MakeTextBold(strings.ToUpper(header))
+	return prettyoutput.MakeTextBold(strings.ToUpper(header))
 }
 
 func (h *HookInfoDto) ToString() string {
-	res := addStyleToHeader("Name:") + "                " + MakeTextHighlight(h.Name) + "\n"
+	res := addStyleToHeader("Name:") + "                " + prettyoutput.MakeTextHighlight(h.Name) + "\n"
 	res += addStyleToHeader("Description") + "          " + h.Description + "\n"
 	res += addStyleToHeader("Args") + "                 " + h.Args + "\n"
 	res += addStyleToHeader("Return values") + "        " + h.ReturnValue + "\n"
@@ -36,10 +39,10 @@ func (r *HookInfoResponse) ToString() string {
 	return res
 }
 
-func MakeHookInfoRequest() *Request {
-	req := &Request{
-		Type:    "change-info",
-		Payload: EmptyPayload{},
+func MakeHookInfoRequest() *communication.Request {
+	req := &communication.Request{
+		Type:    "hooks-info",
+		Payload: communication.EmptyPayload{},
 	}
 	return req
 }
@@ -47,18 +50,18 @@ func MakeHookInfoRequest() *Request {
 func hookInfoPayloadFormatter(payload any) (string, error) {
 	payloadBytes, err := json.Marshal(payload)
 	if err != nil {
-		return "", CliError{Message: "can`t process response payload", Cause: err}
+		return "", errors.CliError{Message: "can`t process response payload", Cause: err}
 	}
 
 	var infoPayload HookInfoResponse
 	err = json.Unmarshal(payloadBytes, &infoPayload)
 	if err != nil {
-		return "", CliError{Message: "can`t process response payload", Cause: err}
+		return "", errors.CliError{Message: "can`t process response payload", Cause: err}
 	}
 
 	return infoPayload.ToString(), nil
 }
 
-func HooksInfoResponseHandler() ResponseHandler {
-	return &DefaultResponseHandler{PayloadFormatter: hookInfoPayloadFormatter}
+func HooksInfoResponseHandler() prettyoutput.ResponseFormatter {
+	return &prettyoutput.DefaultResponseFormatter{PayloadFormatter: hookInfoPayloadFormatter}
 }

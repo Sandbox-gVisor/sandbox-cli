@@ -1,9 +1,6 @@
-package models
+package errors
 
-import (
-	"fmt"
-	"os"
-)
+import "fmt"
 
 type CliError struct {
 	Message string
@@ -16,12 +13,4 @@ func (c CliError) Error() string {
 
 func MakeCliError(message string, cause error) CliError {
 	return CliError{Message: message, Cause: cause}
-}
-
-func ReadFile(filename string) []byte {
-	b, err := os.ReadFile(filename)
-	if err != nil {
-		return nil
-	}
-	return b
 }

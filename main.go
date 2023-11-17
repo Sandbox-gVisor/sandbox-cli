@@ -1,9 +1,9 @@
 package main
 
 import (
-	"sandbox-cli/cli"
+	"sandbox-cli/internal"
 )
 
 func main() {
-	cli.ParseCli()
+	internal.ParseCli()
 }
