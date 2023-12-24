@@ -1,6 +1,6 @@
 # gVisor Sandbox CLI
 
-`sandbox-cli` is a command-line tool designed for in-time configuration of gVisor Sandbox, an open-source container runtime sandbox. This CLI tool allows users to perform various operations related to gVisor's callback functions and state management.
+`sandbox-cli` is a command-line tool designed for in-time configuration of [gVisor Sandbox](https://github.com/Sandbox-gVisor/Sandbox), an open-source container runtime sandbox. This CLI tool allows users to perform various operations related to gVisor's callback functions and state management.
 
 ## Usage
 
@@ -20,23 +20,19 @@ The following arguments are available for the CLI and every command:
 
 ## Commands
 
-### 1. `change`
-
-Change callbacks.
-
-### 2. `man`
+### 1. `man`
 
 Show man (manual) for hooks. This command provides detailed information and documentation about the available hooks that can be used in gVisor's JavaScript engine.
 
-### 3. `state`
+### 2. `state`
 
 Change state. This command allows users to modify the state of gVisor during runtime.
 
-### 4. `get`
+### 3. `get`
 
 Get current callbacks. Use this command to retrieve the currently active callback functions in gVisor.
 
-### 5. `delete`
+### 4. `delete`
 
 Unregister callbacks. This command lets users unregister or remove specific callback functions from gVisor.
 

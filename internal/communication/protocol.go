@@ -1,11 +1,14 @@
-package models
+package communication
 
 import (
 	"encoding/json"
 	"fmt"
 	"io"
 	"net"
+	"sandbox-cli/internal/errors"
 )
+
+type EmptyPayload struct{}
 
 type Request struct {
 	Type    string `json:"type"`
@@ -36,7 +39,7 @@ func writeToConn(conn net.Conn, content []byte) error {
 func SendRequest(addr string, request *Request) (*Response, error) {
 	conn, err := net.Dial("tcp", addr)
 	if err != nil {
-		return nil, MakeCliError("gvisor connection error", err)
+		return nil, errors.MakeCliError("gvisor connection error", err)
 	}
 	defer func(conn net.Conn) {
 		if err := conn.Close(); err != nil {
@@ -51,18 +54,18 @@ func SendRequest(addr string, request *Request) (*Response, error) {
 
 	err = writeToConn(conn, marshaledReqeust)
 	if err != nil {
-		return nil, MakeCliError("error sending request to gvisor", err)
+		return nil, errors.MakeCliError("error sending request to gvisor", err)
 	}
 
 	rawResponse, err := io.ReadAll(conn)
 	if err != nil {
-		return nil, MakeCliError("error reading gvisor response", err)
+		return nil, errors.MakeCliError("error reading gvisor response", err)
 	}
 
 	var response Response
 	err = json.Unmarshal(rawResponse, &response)
 	if err != nil {
-		return nil, MakeCliError("error decoding gvisor response", err)
+		return nil, errors.MakeCliError("error decoding gvisor response", err)
 	}
 
 	return &response, nil

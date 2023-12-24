@@ -1,9 +1,12 @@
-package models
+package commands
 
 import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"sandbox-cli/internal/communication"
+	"sandbox-cli/internal/errors"
+	"sandbox-cli/internal/prettyoutput"
 	"strconv"
 	"strings"
 )
@@ -26,15 +29,15 @@ func highlightJsSyntax(jsSource string) string {
 	schemes := []colorScheme{
 		{
 			patterns: []string{"function", "if", "return", "const", "let", "var"},
-			color:    GreenColorText,
+			color:    prettyoutput.GreenColorText,
 		},
 		{
 			patterns: []string{`\(`, `\)`},
-			color:    OrangeColorText,
+			color:    prettyoutput.OrangeColorText,
 		},
 		{
 			patterns: []string{`"`, "{", "}"},
-			color:    RedColorText,
+			color:    prettyoutput.RedColorText,
 		},
 	}
 
@@ -45,7 +48,7 @@ func highlightJsSyntax(jsSource string) string {
 	for _, scheme := range schemes {
 		for _, pattern := range scheme.patterns {
 			reg := regexp.MustCompile(pattern)
-			jsSource = reg.ReplaceAllString(jsSource, MakeTextBoldAndColored(removeEscaping(pattern), scheme.color))
+			jsSource = reg.ReplaceAllString(jsSource, prettyoutput.MakeTextBoldAndColored(removeEscaping(pattern), scheme.color))
 		}
 	}
 
@@ -53,15 +56,15 @@ func highlightJsSyntax(jsSource string) string {
 }
 
 func (cj *CallbackJson) ToString(isVerbose bool) string {
-	res := fmt.Sprintf("Type:          %s\n", MakeTextBoldAndColored(cj.Type, OrangeColorText))
-	res += fmt.Sprintf("Sysno:         %s\n", MakeTextBoldAndColored(strconv.Itoa(cj.Sysno), OrangeColorText))
-	res += fmt.Sprintf("Entry-point:   %s\n", MakeTextBoldAndColored(cj.EntryPoint, OrangeColorText))
-	strArgs := fmt.Sprintf("%v", cj.CallbackArgs)
-	res += fmt.Sprintf("Args:          %s\n", MakeTextBoldAndColored(strArgs, OrangeColorText))
+	res := fmt.Sprintf("Type:          %s\n", prettyoutput.MakeTextBoldAndColored(cj.Type, prettyoutput.OrangeColorText))
+	res += fmt.Sprintf("Sysno:         %s\n", prettyoutput.MakeTextBoldAndColored(strconv.Itoa(cj.Sysno), prettyoutput.OrangeColorText))
+	res += fmt.Sprintf("Entry-point:   %s\n", prettyoutput.MakeTextBoldAndColored(cj.EntryPoint, prettyoutput.OrangeColorText))
+	strArgs := fmt.Sprintf("%v", strings.Join(cj.CallbackArgs, ", "))
+	res += fmt.Sprintf("Args:          %s\n", prettyoutput.MakeTextBoldAndColored(strArgs, prettyoutput.OrangeColorText))
 	if isVerbose {
 		res += fmt.Sprintf("Body:\n\n%s", highlightJsSyntax(cj.CallbackBody))
 	}
-	res += "\n\n\n"
+	res += "\n\n"
 	return res
 }
 
@@ -69,37 +72,37 @@ type GetCallbacksPayload struct {
 	Callbacks []CallbackJson `json:"callbacks"`
 }
 
-func MakeGetCallbacksRequest() *Request {
-	req := &Request{
+func MakeGetCallbacksRequest() *communication.Request {
+	req := &communication.Request{
 		Type:    "current-callbacks",
-		Payload: EmptyPayload{},
+		Payload: communication.EmptyPayload{},
 	}
 	return req
 }
 
-func MakeGetCallbacksPayloadFormatter(isVerbose bool) PayloadFormatter {
+func MakeGetCallbacksPayloadFormatter(isVerbose bool) prettyoutput.PayloadFormatter {
 	return func(payload any) (string, error) {
 		payloadBytes, err := json.Marshal(payload)
 		if err != nil {
-			return "", CliError{Message: "can`t process response payload", Cause: err}
+			return "", errors.CliError{Message: "can`t process response payload", Cause: err}
 		}
 
 		var getCallbacksPayload GetCallbacksPayload
 		err = json.Unmarshal(payloadBytes, &getCallbacksPayload)
 		if err != nil {
-			return "", CliError{Message: "can`t process response payload", Cause: err}
+			return "", errors.CliError{Message: "can`t process response payload", Cause: err}
 		}
 
 		return getCallbacksPayload.ToString(isVerbose), nil
 	}
 }
 
-func GetCallbackResponseHandler(isVerbose bool) ResponseHandler {
-	return &DefaultResponseHandler{MakeGetCallbacksPayloadFormatter(isVerbose)}
+func GetCallbackResponseHandler(isVerbose bool) prettyoutput.ResponseFormatter {
+	return &prettyoutput.DefaultResponseFormatter{PayloadFormatter: MakeGetCallbacksPayloadFormatter(isVerbose)}
 }
 
 func (r *GetCallbacksPayload) ToString(isVerbose bool) string {
-	res := "\n\nCallbacks:\n"
+	res := "\n\nCallbacks:\n\n"
 	for _, c := range r.Callbacks {
 		res += c.ToString(isVerbose)
 	}
