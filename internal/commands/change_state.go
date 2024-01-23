@@ -5,8 +5,7 @@ import (
 )
 
 type StateRequest struct {
-	EntryPoint string `json:"entry-point"`
-	Src        string `json:"source"`
+	Src string `json:"source"`
 }
 
 type StateResponse struct {
@@ -19,8 +18,7 @@ func (r *StateResponse) ToString() string {
 
 func MakeChangeStateRequest(fileName string) *communication.Request {
 	payload := StateRequest{
-		Src:        string(ReadFile(fileName)),
-		EntryPoint: "",
+		Src: string(ReadFile(fileName)),
 	}
 
 	req := &communication.Request{
