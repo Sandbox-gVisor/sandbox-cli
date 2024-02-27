@@ -34,7 +34,7 @@ func (handler *DefaultResponseFormatter) Format(response *communication.Response
 		responseType = MakeTextBold(response.Type)
 	}
 
-	// map is not used because we won't special order of headers to be printed
+	// map is not used because we want special order of headers to be printed
 	type header struct {
 		name  string
 		value string
