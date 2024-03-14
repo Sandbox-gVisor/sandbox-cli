@@ -3,10 +3,9 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
-	"regexp"
 	"sandbox-cli/internal/communication"
 	"sandbox-cli/internal/errors"
-	"sandbox-cli/internal/prettyoutput"
+	po "sandbox-cli/internal/pretty_output"
 	"strconv"
 	"strings"
 )
@@ -20,49 +19,14 @@ type CallbackJson struct {
 	Type           string   `json:"type"`
 }
 
-func highlightJsSyntax(jsSource string) string {
-	type colorScheme struct {
-		patterns []string
-		color    int
-	}
-
-	schemes := []colorScheme{
-		{
-			patterns: []string{"function", "if", "return", "const", "let", "var"},
-			color:    prettyoutput.GreenColorText,
-		},
-		{
-			patterns: []string{`\(`, `\)`},
-			color:    prettyoutput.OrangeColorText,
-		},
-		{
-			patterns: []string{`"`, "{", "}"},
-			color:    prettyoutput.RedColorText,
-		},
-	}
-
-	removeEscaping := func(str string) string {
-		return strings.Replace(str, `\`, "", -1)
-	}
-
-	for _, scheme := range schemes {
-		for _, pattern := range scheme.patterns {
-			reg := regexp.MustCompile(pattern)
-			jsSource = reg.ReplaceAllString(jsSource, prettyoutput.MakeTextBoldAndColored(removeEscaping(pattern), scheme.color))
-		}
-	}
-
-	return jsSource
-}
-
 func (cj *CallbackJson) ToString(isVerbose bool) string {
-	res := fmt.Sprintf("Type:          %s\n", prettyoutput.MakeTextBoldAndColored(cj.Type, prettyoutput.OrangeColorText))
-	res += fmt.Sprintf("Sysno:         %s\n", prettyoutput.MakeTextBoldAndColored(strconv.Itoa(cj.Sysno), prettyoutput.OrangeColorText))
-	res += fmt.Sprintf("Entry-point:   %s\n", prettyoutput.MakeTextBoldAndColored(cj.EntryPoint, prettyoutput.OrangeColorText))
+	res := fmt.Sprintf("Type:          %s\n", po.MakeTextBoldAndColored(cj.Type, po.OrangeColorText))
+	res += fmt.Sprintf("Sysno:         %s\n", po.MakeTextBoldAndColored(strconv.Itoa(cj.Sysno), po.OrangeColorText))
+	res += fmt.Sprintf("Entry-point:   %s\n", po.MakeTextBoldAndColored(cj.EntryPoint, po.OrangeColorText))
 	strArgs := fmt.Sprintf("%v", strings.Join(cj.CallbackArgs, ", "))
-	res += fmt.Sprintf("Args:          %s\n", prettyoutput.MakeTextBoldAndColored(strArgs, prettyoutput.OrangeColorText))
+	res += fmt.Sprintf("Args:          %s\n", po.MakeTextBoldAndColored(strArgs, po.OrangeColorText))
 	if isVerbose {
-		res += fmt.Sprintf("Body:\n\n%s", highlightJsSyntax(cj.CallbackBody))
+		res += fmt.Sprintf("Body:\n\n%s", po.HighlightJsSyntax(cj.CallbackBody))
 	}
 	res += "\n\n"
 	return res
@@ -80,7 +44,7 @@ func MakeGetCallbacksRequest() *communication.Request {
 	return req
 }
 
-func MakeGetCallbacksPayloadFormatter(isVerbose bool) prettyoutput.PayloadFormatter {
+func MakeGetCallbacksPayloadFormatter(isVerbose bool) po.PayloadFormatter {
 	return func(payload any) (string, error) {
 		payloadBytes, err := json.Marshal(payload)
 		if err != nil {
@@ -97,8 +61,8 @@ func MakeGetCallbacksPayloadFormatter(isVerbose bool) prettyoutput.PayloadFormat
 	}
 }
 
-func GetCallbackResponseHandler(isVerbose bool) prettyoutput.ResponseFormatter {
-	return &prettyoutput.DefaultResponseFormatter{PayloadFormatter: MakeGetCallbacksPayloadFormatter(isVerbose)}
+func GetCallbackResponseHandler(isVerbose bool) po.ResponseFormatter {
+	return &po.DefaultResponseFormatter{PayloadFormatter: MakeGetCallbacksPayloadFormatter(isVerbose)}
 }
 
 func (r *GetCallbacksPayload) ToString(isVerbose bool) string {
