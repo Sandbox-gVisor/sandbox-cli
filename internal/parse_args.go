@@ -7,7 +7,7 @@ import (
 	"os"
 	"sandbox-cli/internal/commands"
 	"sandbox-cli/internal/communication"
-	models2 "sandbox-cli/internal/prettyoutput"
+	models2 "sandbox-cli/internal/pretty_output"
 )
 
 const AddressArgv = "CLI_ADDRESS"

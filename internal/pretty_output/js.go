@@ -1,4 +1,4 @@
-package prettyoutput
+package pretty_output
 
 import (
 	"regexp"
