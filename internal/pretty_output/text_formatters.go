@@ -20,11 +20,6 @@ func MakeTextColored(str string, color int) string {
 	return fmt.Sprintf("\033[%dm%s\033[0m", color, str)
 }
 
-const RedColorText = 31
-const GreenColorText = 32
-const OrangeColorText = 33
-const BlueColorText = 34
-
 func MakeTextBoldAndColored(str string, color int) string {
 	return MakeTextBold(MakeTextColored(str, color))
 }
