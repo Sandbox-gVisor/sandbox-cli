@@ -1,6 +1,8 @@
 package prettyoutput
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func MakeTextBold(str string) string {
 	return fmt.Sprintf("\033[1m%s\033[0m", str)
