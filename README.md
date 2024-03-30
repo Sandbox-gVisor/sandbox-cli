@@ -22,7 +22,8 @@ The following arguments are available for the CLI and every command:
 
 ### 1. `man`
 
-Show man (manual) for hooks. This command provides detailed information and documentation about the available hooks that can be used in gVisor's JavaScript engine.
+Show man (manual) for accessors. This command provides detailed information and documentation about the available accessors 
+that can be used in gVisor's JavaScript engine.
 
 ### 2. `state`
 
@@ -40,7 +41,7 @@ Unregister callbacks. This command lets users unregister or remove specific call
 
 ### Get Current Callbacks with verbose output:
 
-```
+```shell
 sandbox-cli get --verbose
 ```
 
@@ -48,7 +49,7 @@ This command retrieves and displays the currently active callback functions.
 
 ### Change State:
 
-```
+```shell
 sandbox-cli state -a "127.0.0.1:8080" -c change_state.js
 ```
 
@@ -56,7 +57,7 @@ Using this command, users can change the state of gVisor by providing the desire
 
 ### Unregister Callback after syscall 59(exec):
 
-```
+```shell
 sandbox-cli delete -s 59 -t after
 ```
 
@@ -64,10 +65,10 @@ This command allows users to unregister specific callback functions from gVisor.
 
 ## Additional Information
 
-For more details about gVisor and the available hooks, use the following command:
+For more details about gVisor and the available accessors, use the following command:
 
-```
+```shell
 sandbox-cli man
 ```
 
-This will provide comprehensive information about the hooks and their usage in the JavaScript engine integrated into gVisor.
+This will provide comprehensive information about the accessors and their usage in the JavaScript engine integrated into gVisor.
