@@ -30,16 +30,16 @@ func ParseCli() {
 	address := parser.String("a", "address", &argparse.Options{Required: false, Help: "Socket address"})
 	infoCmd := parser.NewCommand("man", "Show man for accessors")
 	stateCmd := parser.NewCommand("state", "Change state")
-	getCmd := parser.NewCommand("get", "Get current callbacks")
-	deleteCmd := parser.NewCommand("delete", "Unregister callbacks")
+	getCmd := parser.NewCommand("get", "Get current hooks")
+	deleteCmd := parser.NewCommand("delete", "Unregister hooks")
 
 	verboseFlag := getCmd.Flag("v", "verbose", &argparse.Options{Required: false, Help: "Verbose output"})
 
 	stateFile := stateCmd.String("c", "conf", &argparse.Options{Required: true, Help: "file with source"})
 
-	deleteAll := deleteCmd.Flag("u", "all", &argparse.Options{Required: false, Help: "Unregister all callbacks"})
-	sysno := deleteCmd.Int("s", "sysno", &argparse.Options{Required: false, Help: "Callback sysno"})
-	callbackType := deleteCmd.String("t", "type", &argparse.Options{Required: false, Help: "Callback type"})
+	deleteAll := deleteCmd.Flag("u", "all", &argparse.Options{Required: false, Help: "Unregister all hooks"})
+	sysno := deleteCmd.Int("s", "sysno", &argparse.Options{Required: false, Help: "Hook sysno"})
+	hookType := deleteCmd.String("t", "type", &argparse.Options{Required: false, Help: "Hook type"})
 
 	err := parser.Parse(os.Args)
 	if err != nil {
@@ -63,13 +63,13 @@ func ParseCli() {
 		request = commands.MakeAccessorsInfoRequest()
 		responseHandler = commands.AccessorInfoResponseHandler()
 	} else if getCmd.Happened() {
-		request = commands.MakeGetCallbacksRequest()
-		responseHandler = commands.GetCallbackResponseHandler(*verboseFlag)
+		request = commands.MakeGetHooksRequest()
+		responseHandler = commands.GetHookResponseHandler(*verboseFlag)
 	} else if deleteCmd.Happened() {
 		if *deleteAll {
-			request = commands.MakeDeleteCallbacksRequest("all", *sysno, *callbackType)
+			request = commands.MakeDeleteHooksRequest("all", *sysno, *hookType)
 		} else {
-			request = commands.MakeDeleteCallbacksRequest("list", *sysno, *callbackType)
+			request = commands.MakeDeleteHooksRequest("list", *sysno, *hookType)
 		}
 	}
 
