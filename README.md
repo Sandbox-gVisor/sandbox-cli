@@ -1,6 +1,7 @@
 # gVisor Sandbox CLI
 
-`sandbox-cli` is a command-line tool designed for in-time configuration of [gVisor Sandbox](https://github.com/Sandbox-gVisor/Sandbox), an open-source container runtime sandbox. This CLI tool allows users to perform various operations related to gVisor's callback functions and state management.
+`sandbox-cli` is a command-line tool designed for in-time configuration of [gVisor Sandbox](https://github.com/Sandbox-gVisor/Sandbox), an open-source container runtime sandbox. 
+This CLI tool allows users to perform various operations related to gVisor's hook functions and state management.
 
 ## Usage
 
@@ -22,7 +23,8 @@ The following arguments are available for the CLI and every command:
 
 ### 1. `man`
 
-Show man (manual) for hooks. This command provides detailed information and documentation about the available hooks that can be used in gVisor's JavaScript engine.
+Show man (manual) for accessors. This command provides detailed information and documentation about the available accessors 
+that can be used in gVisor's JavaScript engine.
 
 ### 2. `state`
 
@@ -30,44 +32,44 @@ Change state. This command allows users to modify the state of gVisor during run
 
 ### 3. `get`
 
-Get current callbacks. Use this command to retrieve the currently active callback functions in gVisor.
+Get current hooks. Use this command to retrieve the currently active hook functions in gVisor.
 
 ### 4. `delete`
 
-Unregister callbacks. This command lets users unregister or remove specific callback functions from gVisor.
+Unregister hooks. This command lets users unregister or remove specific hook functions from gVisor.
 
 ## Example Usage
 
-### Get Current Callbacks with verbose output:
+### Get Current Hooks with verbose output:
 
-```
+```shell
 sandbox-cli get --verbose
 ```
 
-This command retrieves and displays the currently active callback functions.
+This command retrieves and displays the currently active hook functions.
 
 ### Change State:
 
-```
+```shell
 sandbox-cli state -a "127.0.0.1:8080" -c change_state.js
 ```
 
 Using this command, users can change the state of gVisor by providing the desired socket address (e.g., "127.0.0.1:8080").
 
-### Unregister Callback after syscall 59(exec):
+### Unregister Hook after syscall 59(exec):
 
-```
+```shell
 sandbox-cli delete -s 59 -t after
 ```
 
-This command allows users to unregister specific callback functions from gVisor.
+This command allows users to unregister specific hook functions from gVisor.
 
 ## Additional Information
 
-For more details about gVisor and the available hooks, use the following command:
+For more details about gVisor and the available accessors, use the following command:
 
-```
+```shell
 sandbox-cli man
 ```
 
-This will provide comprehensive information about the hooks and their usage in the JavaScript engine integrated into gVisor.
+This will provide comprehensive information about the accessors and their usage in the JavaScript engine integrated into gVisor.
